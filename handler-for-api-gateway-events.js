@@ -1,4 +1,4 @@
-const logr = require('@everymundo/simple-logr')
+// const logr = require('@everymundo/simple-logr')
 
 const handleApiGatewayRequest = async (event, context) => {
   const body = JSON.stringify({
