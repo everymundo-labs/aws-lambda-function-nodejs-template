@@ -5,7 +5,14 @@ module.exports = (serverless) => {
 
   const path = require('path').join(__dirname, `.env-${stage}`)
 
-  const { parsed } = require('dotenv').config({ path })
+  try {
+    const { parsed } = require('dotenv').config({ path })
 
-  return parsed
+    return parsed
+  } catch (error) {
+    return {
+      STAGE: stage,
+      ERROR: error.message
+    }
+  }
 }
