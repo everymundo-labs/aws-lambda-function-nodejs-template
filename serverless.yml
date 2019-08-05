@@ -87,7 +87,7 @@ functions:
     #         path: /hello
 
   kinesis-app:
-    handler: handler-for-kinesis-events.handler
+    handler: handler-for-kinesis-streams-events.handler
     description: your function description here
     environment: ${file(./dotenv-loader.js)}
     package: ${self:provider.package}
