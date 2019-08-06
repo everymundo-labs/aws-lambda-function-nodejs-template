@@ -7,5 +7,12 @@ module.exports = (serverless) => {
 
   const { parsed } = require('dotenv').config({ path })
 
-  return parsed
+  if (parsed) return parsed
+
+  const errorParsed = {
+    STAGE: stage,
+    ERROR: 'NO ENV VARS'
+  }
+
+  return errorParsed
 }
