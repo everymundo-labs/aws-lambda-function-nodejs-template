@@ -38,7 +38,10 @@ provider:
       - temp/**
       - test/**
     include:
-      - index.js
+      - handler-for-api-gateway-events.js
+      - handler-for-s3-events.js
+      - handler-for-load-balancer-events.js
+      - handler-for-kinesis-streams-events.js
       - package.json
       - lib/
 
