@@ -37,6 +37,7 @@
     "ghooks": "^2.0.4",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
+    "serverless": "^1.49.0",
     "serverless-aws-alias": "^1.7.2",
     "serverless-plugin-aws-alerts": "^1.4.0",
     "sinon": "^7.4.0",
