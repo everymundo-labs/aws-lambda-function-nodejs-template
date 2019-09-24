@@ -4,7 +4,6 @@ phases:
     runtime-versions:
       nodejs: 10
     commands:
-      - npm i -g serverless
       - npm ci
   build:
     commands:
@@ -13,4 +12,4 @@ phases:
       - npm run check-coverage
   post_build:
     commands:
-      - serverless deploy --stage prod
+      - ./node_modules/.bin/serverless deploy --stage prod
