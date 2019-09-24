@@ -1,6 +1,6 @@
 {
   "name": "aws-lambda-function-nodejs-template",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Template for lambda-functions",
   "scripts": {
     "cover": "nyc -x test --reporter=lcov --reporter=text mocha --recursive",
