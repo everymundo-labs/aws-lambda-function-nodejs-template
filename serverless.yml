@@ -9,13 +9,17 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  account: 000000000000
+  stage: ${opt:stage, 'staging'}
+  region: ${opt:region, 'us-west-2'}
+  runtime: nodejs12.x
+  logRetentionInDays: 14
+  # reservedConcurrency: 1
   timeout: 20
-  stage: prod
   versionFunctions: true # default is false
-  region: us-east-1
+  deploymentBucket: em-serverless-apps-${self:provider.region}-${self:provider.account}
   memorySize: 128
-  # role: arn:aws:iam::ACCOUNT_NUMBER:role/YOUR_ROLE_NAME # Overwrite the default IAM role which is used for all functions
+  # role: arn:aws:iam::${self:provider.account}:role/YOUR_ROLE_NAME # Overwrite the default IAM role which is used for all functions
   # vpc:
   #   subnetIds:
   #     - subnet-bd4b0e5f
@@ -41,9 +45,17 @@ package:
   include:
     - package.json
     - lib/
+custom:
+  layers:
+    latest:
+      arilineFiltersLayer: airline-filters-layer
+      fastifyJsLayer: fastify-js-layer
+      expressJsLayer: express-js-layer
+      mongodbLayer: mongodb-layer
+      redisLayer: redis-layer
 
 functions:
-  api-app:
+  apiApp:
     handler: handler-for-api-gateway-events.handler
     description: your function description here
     environment: ${file(./dotenv-loader.js)}
@@ -52,14 +64,15 @@ functions:
       include:
         - handler-for-api-gateway-events.js
     # layers: # An optional list Lambda Layers to use
-      # - arn:aws:lambda:region:XXXXXX:layer:LayerName:Y
+    #  - ${file(./node_modules/.bin/latest-version-of-layer.js):name.fastifyJsLayer}
+    #  - ${file(./node_modules/.bin/latest-version-of-layer.js):name.mongodbLayer}
     # events:
     #   - http: # This creates an API Gateway HTTP endpoint which can be used to trigger this function.  Learn more in "events/apigateway"
     #       path: my-api/action # Path for this endpoint
     #       method: get # HTTP method for this endpoint
     #       cors: true # Turn on CORS for this endpoint, but don't forget to return the right header in your response
 
-  s3-app:
+  s3App:
     handler: handler-for-s3-events.handler
     description: your function description here
     environment: ${file(./dotenv-loader.js)}
@@ -76,7 +89,7 @@ functions:
     #         - prefix: uploads/
     #         - suffix: .csv
 
-  alb-app:
+  albApp:
     handler: handler-for-load-balancer-events.handler
     description: your function description here
     environment: ${file(./dotenv-loader.js)}
@@ -92,7 +105,7 @@ functions:
     #         host: example.com
     #         path: /hello
 
-  kinesis-app:
+  kinesisApp:
     handler: handler-for-kinesis-streams-events.handler
     description: your function description here
     environment: ${file(./dotenv-loader.js)}
@@ -102,10 +115,12 @@ functions:
     # events:
     #   - stream:
     #       arn: arn:aws:kinesis:us-west-2:ACCOUNT_NUMBER:stream/KINESIS_STREAM_NAME
-    #       batchSize: 500
-    #       # startingPosition: TRIM_HORIZON
-    #       startingPosition: LATEST
-    #       enabled: false
+    #      batchSize: 100
+    #      batchWindow: 5
+    #      startingPosition: LATEST
+    #      maximumRetryAttempts: 5
+    #      parallelizationFactor: 10
+    #      enabled: false
 
 custom:
   # https://serverless.com/plugins/serverless-plugin-aws-alerts/
