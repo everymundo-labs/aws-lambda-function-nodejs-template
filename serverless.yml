@@ -69,6 +69,7 @@ functions:
   apiApp:
     handler: handler-for-api-gateway-events.handler
     description: your function description here
+    # environment: ${ssm:/aws/reference/secretsmanager/lambda/${self:service}-${self:provider.stage}-apiApp~true, self:custom.environment.${self:provider.stage}}
     environment: ${file(./dotenv-loader.js)}
     reservedConcurrency: 6 # optional, reserved concurrency limit for this function. By default, AWS uses account concurrency limit
     package:
@@ -86,6 +87,7 @@ functions:
   s3App:
     handler: handler-for-s3-events.handler
     description: your function description here
+    # environment: ${ssm:/aws/reference/secretsmanager/lambda/${self:service}-${self:provider.stage}-s3App~true, self:custom.environment.${self:provider.stage}}
     environment: ${file(./dotenv-loader.js)}
     memorySize: 256 # memorySize for this specific function.
     package:
@@ -103,6 +105,7 @@ functions:
   albApp:
     handler: handler-for-load-balancer-events.handler
     description: your function description here
+    # environment: ${ssm:/aws/reference/secretsmanager/lambda/${self:service}-${self:provider.stage}-albApp~true, self:custom.environment.${self:provider.stage}}
     environment: ${file(./dotenv-loader.js)}
     reservedConcurrency: 5 # optional, reserved concurrency limit for this function. By default, AWS uses account concurrency limit
     package:
