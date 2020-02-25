@@ -65,6 +65,14 @@ package:
     - package.json
     - lib/
 
+custom:
+  environment:
+    dev: ${file(./dotenv-loader.js)}
+    staging:
+      A: 1
+      B: 2
+      C: 3
+
 functions:
   apiApp:
     handler: handler-for-api-gateway-events.handler
