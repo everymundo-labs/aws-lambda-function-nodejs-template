@@ -9,16 +9,16 @@ plugins:
 
 provider:
   name: aws
-  account: 000000000000
+  account: ${opt:account, '000000000000'}
   stage: ${opt:stage, 'staging'}
   region: ${opt:region, 'us-west-2'}
   runtime: nodejs12.x
-  logRetentionInDays: 14
+  logRetentionInDays: 90
   # reservedConcurrency: 1
-  timeout: 20
+  timeout: 20 # in seconds
   versionFunctions: true # default is false
-  deploymentBucket: em-serverless-apps-${self:provider.region}-${self:provider.account}
   memorySize: 128
+  deploymentBucket: em-serverless-apps-${self:provider.region}-${self:provider.account}
   # role: arn:aws:iam::${self:provider.account}:role/YOUR_ROLE_NAME # Overwrite the default IAM role which is used for all functions
   # vpc:
   #   subnetIds:
@@ -28,6 +28,16 @@ provider:
   #   securityGroupIds:
   #     - sg-35b5c9e0
   #     - sg-bd532b82
+  tags: # Tags that will be added to each of the deployed resources
+    Team: your-team-name # exaples: [datacore, data-analytics, air-sem, front-end, qa, etc..]
+    # if your project contains multiple applications it will be placed in many 
+    Project: your-project-name 
+    Application: ${self:service}
+    Environment: ${self:provider.stage}
+    Tenants: all 
+    # In most cases it will be your own team but in some cases you could be developing
+    # a solution for another team then that team's name should be placed here
+    BilledTeam: the-team-responsible-for-the-cost
   aliasStage:
     loggingLevel: "ERROR"
     dataTraceEnabled: true
@@ -42,17 +52,18 @@ package:
     - coverage/**
     - temp/**
     - test/**
+    - node_modules/.bin/**
+    - node_modules/*/README.md
+    - node_modules/*/readme.md
+    - node_modules/*/LICENSE
+    - node_modules/*/.travis.yml
+    - node_modules/*/.editorconfig
+    - node_modules/*/docs/**
+    - node_modules/*/example/**
+    - node_modules/*/test/**
   include:
     - package.json
     - lib/
-custom:
-  layers:
-    latest:
-      arilineFiltersLayer: airline-filters-layer
-      fastifyJsLayer: fastify-js-layer
-      expressJsLayer: express-js-layer
-      mongodbLayer: mongodb-layer
-      redisLayer: redis-layer
 
 functions:
   apiApp:
@@ -64,8 +75,8 @@ functions:
       include:
         - handler-for-api-gateway-events.js
     # layers: # An optional list Lambda Layers to use
-    #  - ${file(./node_modules/.bin/latest-version-of-layer.js):name.fastifyJsLayer}
-    #  - ${file(./node_modules/.bin/latest-version-of-layer.js):name.mongodbLayer}
+    #  - ${cf:node-fastify-layer.latestVersionARN}
+    #  - ${cf:node-mongodb-layer.latestVersionARN}
     # events:
     #   - http: # This creates an API Gateway HTTP endpoint which can be used to trigger this function.  Learn more in "events/apigateway"
     #       path: my-api/action # Path for this endpoint
