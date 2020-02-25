@@ -19,4 +19,5 @@ fs.writeFileSync('package.json', newPackageJson)
 fs.writeFileSync('serverless.yml', newServerlessYaml)
 
 fs.writeFileSync('README.md', `#${projectName}`)
+fs.unlinkSync('package-lock.json')
 fs.unlinkSync(__filename)
